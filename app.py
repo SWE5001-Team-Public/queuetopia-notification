@@ -10,6 +10,7 @@ app = FastAPI()
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")
 
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
@@ -36,7 +37,7 @@ async def send_whatsapp(request: Request):
         body = data["body"]
         message = client.messages.create(
             to=f"whatsapp:{to}",
-            from_="whatsapp:" + TWILIO_PHONE_NUMBER,
+            from_="whatsapp:" + TWILIO_WHATSAPP_NUMBER,
             body=body
         )
         return {"status": "WhatsApp sent", "message_sid": message.sid}
