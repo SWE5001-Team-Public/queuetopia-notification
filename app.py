@@ -1,7 +1,9 @@
 import os
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, APIRouter
 from twilio.rest import Client
 from dotenv import load_dotenv
+
+import requests
 
 load_dotenv()
 
@@ -14,7 +16,9 @@ TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")
 
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
-@app.post("/send-sms/")
+router = APIRouter(prefix="/notification-mgr")
+
+@router.post("/send-sms/")
 async def send_sms(request: Request):
     try:
         data = await request.json()
@@ -29,7 +33,7 @@ async def send_sms(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/send-whatsapp/")
+@router.post("/send-whatsapp/")
 async def send_whatsapp(request: Request):
     try:
         data = await request.json()
@@ -43,3 +47,21 @@ async def send_whatsapp(request: Request):
         return {"status": "WhatsApp sent", "message_sid": message.sid}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/health")
+async def health_check():
+    try:
+        instance_id = requests.get("http://169.254.169.254/latest/meta-data/instance-id", timeout=1).text
+        az = requests.get("http://169.254.169.254/latest/meta-data/placement/availability-zone", timeout=1).text
+        return {
+            "status": "healthy",
+            "instance_id": instance_id,
+            "availability_zone": az
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "error": str(e)
+        }
+
+app.include_router(router)
