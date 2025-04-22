@@ -30,7 +30,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.INTEGRATION_EC2_IP }} << 'EOF'
             bash /home/ec2-user/update_microservice.sh git@github.com:SWE5001-Team-Public/queuetopia-notification.git /home/ec2-user/queuetopia-notification
             cd /home/ec2-user/queuetopia-notification
-            bash ./scripts/up.sh
+            bash ./up.sh
           EOF
 
   deploy-production:
