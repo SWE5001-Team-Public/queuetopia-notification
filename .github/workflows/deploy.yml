@@ -48,5 +48,5 @@ jobs:
       - name: Start Auto Scaling Group Refresh
         run: |
           aws autoscaling start-instance-refresh \
-            --auto-scaling-group-name QueuetopiaASG \
+            --auto-scaling-group-name QueuetopiaQueueMgrASG \
             --region ap-southeast-2
