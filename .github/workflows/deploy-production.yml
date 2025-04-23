@@ -18,4 +18,5 @@ jobs:
         run: |
           aws autoscaling start-instance-refresh \
             --auto-scaling-group-name QueuetopiaASG \
+            --preferences '{"SkipMatching": false}' \
             --region ap-southeast-2
